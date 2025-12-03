@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure html and body take full height */
+html, body, #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global background gradient for all pages */
+body {
+  background: linear-gradient(to right, #dcfce7, #fce7f3); /* from-green-100 to-pink-100 */
+}
