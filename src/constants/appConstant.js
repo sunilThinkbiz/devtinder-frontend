@@ -11,9 +11,10 @@ export const API_ENDPOINTS = {
   },
   USERS: {
     BASE: "/users",
-    PROFILE: "/users/profile",
-    UPDATE: "/users/update",
+    PROFILE: "/profile/view",
+    UPDATE: "/profile/edit",
   },
+  FEED: "/feed",
   // Add more endpoints as needed
 };
 
