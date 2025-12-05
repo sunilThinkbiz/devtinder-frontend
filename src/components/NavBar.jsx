@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL, API_ENDPOINTS } from "../constants/appConstant";
 import { removeUser } from "../store/slices/userSlice";
+import { Toast, useToast } from "../common/Toast";
 
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { toast, showSuccess, showError } = useToast();
 
   const handleLogOut = async () => {
     try {
@@ -19,9 +21,10 @@ const NavBar = () => {
         { withCredentials: true }
       );
       dispatch(removeUser());
-      return navigate("/login");
+      showSuccess("Logged out successfully!");
+      setTimeout(() => navigate("/login"), 500);
     } catch (error) {
-      console.error("Logout failed:", error);
+      showError(error.response?.message||"Logout failed. Please try again.");
     }
   };
   return (
@@ -67,7 +70,10 @@ const NavBar = () => {
                   </Link>
                 </li>
                 <li>
-                  <a>Settings</a>
+                  <Link to="/connections">Connection</Link>
+                </li>
+                <li>
+                  <Link to="/request">Request</Link>
                 </li>
                 <li>
                   <a onClick={handleLogOut}>Logout</a>
@@ -77,6 +83,7 @@ const NavBar = () => {
           </div>
         )}
       </div>
+      {toast && <Toast message={toast.message} type={toast.type} />}
     </>
   );
 };

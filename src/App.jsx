@@ -1,20 +1,27 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import { Login } from "./pages/Login";
-import Profile from "./pages/Profile";
-import Signup from "./pages/Signup";
 import Feed from "./pages/Feed";
+import Profile from "./pages/Profile";
+import {Login} from "./pages/Login";
+import Signup from "./pages/Signup";
+import Connection from "./components/Connection";
+import ViewProfile from "./pages/ViewProfile";
+import Request from "./components/Request";
 
 function App() {
   return (
-    <BrowserRouter basename="/">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-        <Route path="/" element={<Feed />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route index element={<Feed />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="connections" element={<Connection />} />
+          <Route path="/request"element={<Request />} />
+          <Route path="profile/:id" element={<ViewProfile />} />
         </Route>
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </BrowserRouter>
   );

@@ -5,6 +5,7 @@ import { API_BASE_URL, API_ENDPOINTS } from "../constants/appConstant";
 import { addUser } from "../store/slices/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Toast,useToast } from "../common/Toast";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName || "");
@@ -16,6 +17,8 @@ const EditProfile = ({ user }) => {
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl || "");
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+
+  const { toast, showSuccess, showError } = useToast();
   const handleInputChange = (setter) => (e) => setter(e.target.value);
  
   const dispatch = useDispatch();
@@ -31,8 +34,7 @@ const EditProfile = ({ user }) => {
 
   reader.onloadend = () => {
     const base64Image = reader.result;   // Cloudinary-ready Base64 string
-    setPhotoUrl(base64Image);           // Save preview + send to backend
-    console.log("Photo URL:", base64Image);
+    setPhotoUrl(base64Image);          
   };
 };
 
@@ -50,17 +52,17 @@ const EditProfile = ({ user }) => {
     
        const res = await axios.patch(`${API_BASE_URL}${API_ENDPOINTS.USERS.UPDATE}`, updateData, {withCredentials: true});
        dispatch(addUser( res.data.data));
-       navigate("/");
+       showSuccess("Profile updated successfully!");
+        setTimeout(() => navigate("/"), 500);
     }catch(error){
-      console.error("Error saving profile:", error);
-      console.error("Error response:", error.response?.data);
+      showError(error.response?.data?.message || "Failed to update profile. Please try again.");
     }
   }
   return (
     <div className="flex flex-col lg:flex-row gap-10 p-6 justify-center">
       {/* FORM CARD */}
       <div className="w-full max-w-xl bg-white shadow-2xl rounded-3xl p-8 border border-gray-100">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900">Edit Profile</h2>
+        <h2 className="text-3xl font-bold mb-3 text-gray-900">Edit Profile</h2>
 
         {/* NAME */}
         <div className="grid grid-cols-2 gap-5">
@@ -86,7 +88,7 @@ const EditProfile = ({ user }) => {
         </div>
 
         {/* AGE + GENDER */}
-        <div className="grid grid-cols-2 gap-5 mt-6">
+        <div className="grid grid-cols-2 gap-5 mt-3">
           <div>
             <label className="font-semibold text-gray-700">Age</label>
             <input
@@ -114,7 +116,7 @@ const EditProfile = ({ user }) => {
         </div>
 
         {/* ABOUT */}
-        <div className="mt-6">
+        <div className="mt-3">
           <label className="font-semibold text-gray-700">About</label>
           <textarea
             className="w-full mt-2 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-400 focus:outline-none"
@@ -125,7 +127,7 @@ const EditProfile = ({ user }) => {
           />
         </div>
         {/* PHOTO GALLERY */}
-        <div className="mt-6">
+        <div className="mt-3">
           <label className="font-semibold">Photos</label>
 
           <div className="flex gap-4 mt-3">
@@ -152,7 +154,7 @@ const EditProfile = ({ user }) => {
         </div>
 
         {/* SKILLS */}
-        <div className="mt-6">
+        <div className="mt-3">
           <label className="font-semibold text-gray-700">Skills</label>
 
           <div className="flex flex-wrap gap-3 mt-3">
@@ -193,7 +195,7 @@ const EditProfile = ({ user }) => {
         </div>
 
         {/* SAVE BUTTON */}
-        <button  onClick={saveProfile}className="w-full mt-8 bg-red-500 text-white py-3 rounded-xl text-lg font-semibold shadow-lg hover:bg-red-600 transition">
+        <button  onClick={saveProfile}className="w-full mt-3 bg-red-500 text-white py-3 rounded-xl text-lg font-semibold shadow-lg hover:bg-red-600 transition">
           Save Profile
         </button>
       </div>
@@ -204,6 +206,7 @@ const EditProfile = ({ user }) => {
           user={{ firstName, lastName, age, gender, about, skills, photoUrl }}
         />
       </div>
+     {toast && <Toast message={toast.message} type={toast.type} />}
     </div>
   );
 };

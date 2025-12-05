@@ -6,11 +6,13 @@ import axios from 'axios'
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/appConstant'
 import { useDispatch, useSelector } from 'react-redux'
 import { addUser } from '../store/slices/userSlice'
+import { Toast, useToast } from '../common/Toast'
 
 const Layout = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const userData = useSelector((state) => state.user);
+  const { toast, showError } = useToast();
   
    
     const fetchUserProfile = async() => {
@@ -23,7 +25,7 @@ const Layout = () => {
         console.log("User not authenticated");
         navigate("/login");
       } else {
-        console.error("Error fetching profile:", error);
+        showError(error.response?.message ||"Error fetching profile. Please try again.");
       }
       }
   };
@@ -39,6 +41,7 @@ useEffect(() => {
           <Outlet />
         </main>
         <Footer />
+        {toast && <Toast message={toast.message} type={toast.type} />}
     </div>
   )
 }
