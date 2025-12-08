@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { API_BASE_URL, API_ENDPOINTS } from "../constants/appConstant";
 
 const ViewProfile = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [profile, setProfile] = useState(null);
-const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const fromRequests = searchParams.get("from") === "requests";
+  const requestId = searchParams.get("requestId");
 
  useEffect(() => {
   const loadProfile = async () => {
@@ -22,6 +26,44 @@ const navigate = useNavigate();
 
   loadProfile();
 }, [id]);
+
+  const handleAcceptRequest = async () => {
+    if (!requestId) {
+      alert("Request ID not found");
+      return;
+    }
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/request/review/accepted/${requestId}`;
+      await axios.post(url, {}, { withCredentials: true });
+      // Navigate back to requests page after accepting
+      navigate("/request");
+    } catch (err) {
+      console.log("Accept request error:", err);
+      alert("Failed to accept request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRejectRequest = async () => {
+    if (!requestId) {
+      alert("Request ID not found");
+      return;
+    }
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/request/review/rejected/${requestId}`;
+      await axios.post(url, {}, { withCredentials: true });
+      // Navigate back to requests page after rejecting
+      navigate("/request");
+    } catch (err) {
+      console.log("Reject request error:", err);
+      alert("Failed to reject request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   if (!profile)
@@ -85,13 +127,42 @@ const navigate = useNavigate();
 
         {/* Buttons */}
         <div className="flex justify-center gap-4 mt-8">
-          <button className="bg-pink-500 text-white px-6 py-2 rounded-full shadow hover:bg-pink-600">
-            Message
-          </button>
-
-          <button onClick={() => navigate("/connections")} className="bg-gray-200 text-gray-800 px-6 py-2 rounded-full shadow hover:bg-gray-300">
-            Back
-          </button>
+          {fromRequests ? (
+            <>
+              <button
+                onClick={handleAcceptRequest}
+                disabled={loading}
+                className="bg-green-500 text-white px-6 py-2 rounded-full shadow hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? "Processing..." : "Accept"}
+              </button>
+              <button
+                onClick={handleRejectRequest}
+                disabled={loading}
+                className="bg-red-500 text-white px-6 py-2 rounded-full shadow hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? "Processing..." : "Reject"}
+              </button>
+              <button
+                onClick={() => navigate("/request")}
+                className="bg-gray-200 text-gray-800 px-6 py-2 rounded-full shadow hover:bg-gray-300"
+              >
+                Back
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="bg-pink-500 text-white px-6 py-2 rounded-full shadow hover:bg-pink-600">
+                Message
+              </button>
+              <button
+                onClick={() => navigate("/connections")}
+                className="bg-gray-200 text-gray-800 px-6 py-2 rounded-full shadow hover:bg-gray-300"
+              >
+                Back
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

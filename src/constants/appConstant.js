@@ -6,16 +6,18 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: "/login",
     LOGOUT: "/logout",
-    REGISTER: "/register",
+    SIGNUP: "/signup",
+    FOGOTPASSWORD:"/change/password",
     REFRESH: "/refresh",
   },
   USERS: {
     BASE: "/users",
     PROFILE: "/profile/view",
     UPDATE: "/profile/edit",
-    VIEW_PROFILE:"/connection/viewprofile"
+    VIEW_PROFILE:"/viewprofile"
   },
   CONNECTIONS: "/user/connections",
+  REQUESTS:"/user/requests/recived",
   FEED: "/feed",
   // Add more endpoints as needed
 };

@@ -38,8 +38,8 @@ const EditProfile = ({ user }) => {
   };
 };
 
-  const saveProfile = async() =>{
-    try{
+  const saveProfile = async () => {
+    try {
       const updateData = {
         firstName,
         lastName,
@@ -50,12 +50,22 @@ const EditProfile = ({ user }) => {
         skills
       };
     
-       const res = await axios.patch(`${API_BASE_URL}${API_ENDPOINTS.USERS.UPDATE}`, updateData, {withCredentials: true});
-       dispatch(addUser( res.data.data));
-       showSuccess("Profile updated successfully!");
-        setTimeout(() => navigate("/"), 500);
-    }catch(error){
-      showError(error.response?.data?.message || "Failed to update profile. Please try again.");
+      const res = await axios.patch(
+        `${API_BASE_URL}${API_ENDPOINTS.USERS.UPDATE}`, 
+        updateData, 
+        { withCredentials: true }
+      );
+      
+      dispatch(addUser(res.data.data));
+      showSuccess("Profile updated successfully!");
+      setTimeout(() => navigate("/"), 500);
+    } catch (error) {
+      const errorMessage = 
+        error.response?.data?.message || 
+        error.response?.data?.error || 
+        error.message || 
+        "Failed to update profile. Please try again.";
+      showError(errorMessage);
     }
   }
   return (

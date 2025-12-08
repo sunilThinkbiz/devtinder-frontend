@@ -11,7 +11,6 @@ const Connection = () => {
     const navigate  = useNavigate()
     const fetchConnections = async () => {
         const res = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.CONNECTIONS}`, {withCredentials: true});
-        console.log("Connections data:", res.data.data);
         dispatch(addConnection(res.data.data));
 
     }

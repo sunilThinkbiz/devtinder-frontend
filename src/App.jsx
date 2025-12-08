@@ -3,7 +3,6 @@ import Layout from "./components/Layout";
 import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
 import {Login} from "./pages/Login";
-import Signup from "./pages/Signup";
 import Connection from "./components/Connection";
 import ViewProfile from "./pages/ViewProfile";
 import Request from "./components/Request";
@@ -17,11 +16,9 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="connections" element={<Connection />} />
           <Route path="/request"element={<Request />} />
-          <Route path="profile/:id" element={<ViewProfile />} />
-        </Route>
-
+          <Route path="/profile/:id" element={<ViewProfile />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

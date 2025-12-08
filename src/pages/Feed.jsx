@@ -18,15 +18,24 @@ const Feed = () => {
         }
        
     }
-useEffect(() => {
+    useEffect(() => {
     getFeedData();
-}, []);
+    }, []);
+
+   if (!feed || feed.length === 0) {
+    return (
+      <h1 className="text-center mt-10 text-gray-600 font-semibold">
+        No users found
+      </h1>
+    );
+  }
+
  return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4">
       <div className="flex flex-col items-center gap-6 w-full max-w-md">
-        {feed?.map((user) => (
-          <UserCard key={user._id} user={user} />
-        ))}
+        {feed &&(
+          <UserCard user={feed[0]} />
+        )}
       </div>
     </div>
   );
